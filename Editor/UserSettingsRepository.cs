@@ -63,6 +63,14 @@ namespace UnityEditor.SettingsManagement
             get { return SettingsScope.User; }
         }
 
+        /// <summary>
+        /// An identifying name for this repository. User settings are named "EditorPrefs."
+        /// </summary>
+        public string name
+        {
+            get { return "EditorPrefs"; }
+        }
+
         /// <value>
         /// File path to the serialized settings data.
         /// </value>

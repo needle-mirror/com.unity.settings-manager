@@ -10,19 +10,22 @@ namespace UnityEngine.SettingsManagement.EditorTests
 {
 	class SettingsTests : IPrebuildSetup, IPostBuildCleanup
 	{
-		const string k_SettingsTestsPath = "ProjectSettings/SettingsTests.json";
+		const string k_PackageName = "com.unity.settings-manager";
+		const string k_SettingsFile = "SettingsTests";
+
 		static Settings s_Settings;
+
+		static string projectSettingsPath
+		{
+			get { return PackageSettingsRepository.GetSettingsPath(k_PackageName, k_SettingsFile); }
+		}
 
 		static Settings settings
 		{
 			get
 			{
-				if(s_Settings == null)
-					s_Settings = new Settings(new ISettingsRepository[]
-					{
-						new ProjectSettingsRepository(k_SettingsTestsPath),
-						new UserSettingsRepository()
-					});
+				if (s_Settings == null)
+					s_Settings = new Settings(k_PackageName);
 				return s_Settings;
 			}
 		}
@@ -36,8 +39,8 @@ namespace UnityEngine.SettingsManagement.EditorTests
 			foreach (var v in s_AllPreferences)
 				v.Delete();
 
-			if (File.Exists(k_SettingsTestsPath))
-				File.Delete(k_SettingsTestsPath);
+			if (File.Exists(projectSettingsPath))
+				File.Delete(projectSettingsPath);
 		}
 
 		[Serializable]
@@ -304,11 +307,7 @@ namespace UnityEngine.SettingsManagement.EditorTests
 					pref.Reset();
 				settings.Save();
 
-				var instance = new Settings(new ISettingsRepository[]
-				{
-					new ProjectSettingsRepository(k_SettingsTestsPath),
-					new UserSettingsRepository()
-				});
+				var instance = new Settings(k_PackageName);
 
 				Assert.AreEqual((bool)s_StaticBoolUser, instance.Get<bool>(s_StaticBoolUser.key, s_StaticBoolUser.scope));
 				Assert.AreEqual((bool)s_StaticBoolProject, instance.Get<bool>(s_StaticBoolProject.key, s_StaticBoolProject.scope));
@@ -335,11 +334,7 @@ namespace UnityEngine.SettingsManagement.EditorTests
 
 				settings.Save();
 
-				var instance = new Settings(new ISettingsRepository[]
-				{
-					new ProjectSettingsRepository(k_SettingsTestsPath),
-					new UserSettingsRepository()
-				});
+				var instance = new Settings(k_PackageName);
 
 				Assert.IsFalse(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
 				Assert.IsFalse(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
@@ -391,11 +386,7 @@ namespace UnityEngine.SettingsManagement.EditorTests
 
 				settings.Save();
 
-				var instance = new Settings(new ISettingsRepository[]
-				{
-					new ProjectSettingsRepository(k_SettingsTestsPath),
-					new UserSettingsRepository()
-				});
+				var instance = new Settings(k_PackageName);
 
 				Assert.IsTrue(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
 				Assert.IsTrue(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
@@ -440,11 +431,7 @@ namespace UnityEngine.SettingsManagement.EditorTests
 
 				settings.Save();
 
-				var instance = new Settings(new ISettingsRepository[]
-				{
-					new ProjectSettingsRepository(k_SettingsTestsPath),
-					new UserSettingsRepository()
-				});
+				var instance = new Settings(k_PackageName);
 
 				Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassUser.key, s_StaticClassUser.scope).intValue, "Reload Settings Instance");
 				Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassProject.key, s_StaticClassProject.scope).intValue, "Reload Settings Instance");

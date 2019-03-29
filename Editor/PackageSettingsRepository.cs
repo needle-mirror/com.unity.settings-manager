@@ -4,15 +4,23 @@ using UnityEngine;
 
 namespace UnityEditor.SettingsManagement
 {
+    /// <inheritdoc />
     /// <summary>
-    /// A settings repository that stores data to a JSON file.
+    /// A settings repository that stores data local to a Unity project.
     /// </summary>
     [Serializable]
-    public class ProjectSettingsRepository : ISettingsRepository
+    public sealed class PackageSettingsRepository : ISettingsRepository
     {
+        const string k_PackageSettingsDirectory = "ProjectSettings/Packages";
         const bool k_PrettyPrintJson = true;
-        string m_Path;
+
         bool m_Initialized;
+
+        [SerializeField]
+        string m_Name;
+
+        [SerializeField]
+        string m_Path;
 
         [SerializeField]
         SettingsDictionary m_Dictionary = new SettingsDictionary();
@@ -20,11 +28,20 @@ namespace UnityEditor.SettingsManagement
         /// <summary>
         /// Constructor sets the serialized data path.
         /// </summary>
-        /// <param name="path">The path to which settings will be saved in JSON format.</param>
-        public ProjectSettingsRepository(string path)
+        /// <param name="package">
+        /// The package name.
+        /// </param>
+        /// <param name="name">
+        /// A name for this settings file. Settings are saved in `ProjectSettings/Packages/{package}/{name}.json`.
+        /// </param>
+        public PackageSettingsRepository(string package, string name)
         {
-            m_Path = path;
+            m_Name = name;
+            m_Path = GetSettingsPath(package, name);
             m_Initialized = false;
+
+            AssemblyReloadEvents.beforeAssemblyReload += Save;
+            EditorApplication.quitting += Save;
         }
 
         void Init()
@@ -52,12 +69,39 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <value>
-        /// File path to the serialized settings data.
+        /// The full path to the settings file.
+        /// This corresponds to `Unity Project/Project Settings/Packages/com.unity.package/name`.
         /// </value>
         /// <inheritdoc cref="ISettingsRepository.path"/>
         public string path
         {
             get { return m_Path; }
+        }
+
+        /// <summary>
+        /// The name of this settings file.
+        /// </summary>
+        public string name
+        {
+            get { return m_Name; }
+        }
+
+        // Cannot call FindFromAssembly from a constructor or field initializer
+//        static string CreateSettingsPath(Assembly assembly, string name)
+//        {
+//            var info = PackageManager.PackageInfo.FindForAssembly(assembly);
+//            return string.Format("{0}/{1}/{2}.json", k_PackageSettingsDirectory, info.name, name);
+//        }
+
+        /// <summary>
+        /// Get a path for a settings file relative to the calling assembly package directory.
+        /// </summary>
+        /// <param name="packageName">The name of the package requesting this setting.</param>
+        /// <param name="name">An optional name for the settings file. Default is "Settings."</param>
+        /// <returns>A package-scoped path to the settings file within Project Settings.</returns>
+        public static string GetSettingsPath(string packageName, string name = "Settings")
+        {
+            return string.Format("{0}/{1}/{2}.json", k_PackageSettingsDirectory, packageName, name);
         }
 
         /// <summary>
@@ -67,6 +111,13 @@ namespace UnityEditor.SettingsManagement
         public void Save()
         {
             Init();
+
+            if (!File.Exists(path))
+            {
+                var directory = Path.GetDirectoryName(path);
+                Directory.CreateDirectory(directory);
+            }
+
             File.WriteAllText(path, EditorJsonUtility.ToJson(this, k_PrettyPrintJson));
         }
 

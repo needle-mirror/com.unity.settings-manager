@@ -2,9 +2,14 @@
 
 namespace UnityEditor.SettingsManagement.Examples
 {
+    /// <summary>
+    /// This class will act as a manager for the <see cref="Settings"/> singleton.
+    /// </summary>
     static class MySettingsManager
     {
-        internal const string k_ProjectSettingsPath = "ProjectSettings/MySettingsExample.json";
+        // Replace this with your own package name. Project settings will be stored in a JSON file in a directory matching
+        // this name.
+        internal const string k_PackageName = "com.unity.settings-manager-examples";
 
         static Settings s_Instance;
 
@@ -13,15 +18,13 @@ namespace UnityEditor.SettingsManagement.Examples
             get
             {
                 if (s_Instance == null)
-                    s_Instance = new Settings(new ISettingsRepository[]
-                    {
-                        new ProjectSettingsRepository(k_ProjectSettingsPath),
-                        new UserSettingsRepository()
-                    });
+                    s_Instance = new Settings(k_PackageName);
 
                 return s_Instance;
             }
         }
+
+        // The rest of this file is just forwarding the various setting methods to the instance.
 
         public static void Save()
         {

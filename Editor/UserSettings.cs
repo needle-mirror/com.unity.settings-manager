@@ -11,6 +11,8 @@ namespace UnityEditor.SettingsManagement
     /// </summary>
     static class UserSettings
     {
+        internal const string packageName = "com.unity.settings-manager";
+
         internal static string GetSettingsString(IEnumerable<Assembly> assemblies, params SettingsScope[] scopes)
         {
             var settings = FindUserSettings(assemblies, SettingVisibility.All);

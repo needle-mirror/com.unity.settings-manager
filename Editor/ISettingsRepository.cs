@@ -10,6 +10,11 @@ namespace UnityEditor.SettingsManagement
         /// </value>
         SettingsScope scope { get; }
 
+        /// <summary>
+        /// A name to identify this repository.
+        /// </summary>
+        string name { get; }
+
         /// <value>
         /// File path to the serialized settings data.
         /// </value>

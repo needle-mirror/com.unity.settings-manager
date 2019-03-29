@@ -7,6 +7,7 @@ namespace UnityEditor.SettingsManagement
     enum SettingVisibility
     {
         None = 0 << 0,
+
         /// <value>
         /// Matches any static field implementing IUserSetting and tagged with [UserSettingAttribute(visibleInSettingsProvider = true)].
         /// </value>
@@ -66,6 +67,12 @@ namespace UnityEditor.SettingsManagement
         /// </value>
         SettingsScope scope { get; }
 
+        /// <summary>
+        /// The name of the <see cref="ISettingsRepository"/> that this setting should be associated with. If null, the
+        /// first repository matching the <see cref="scope"/> will be used.
+        /// </summary>
+        string settingsRepositoryName { get; }
+
         /// <value>
         /// The <see cref="Settings"/> instance that this setting should be saved and loaded from.
         /// </value>
@@ -119,7 +126,9 @@ namespace UnityEditor.SettingsManagement
     }
 
     /// <summary>
-    /// A generic implementation of IUserSetting.
+    /// A generic implementation of IUserSetting to be used with a <see cref="Settings"/> instance. This default
+    /// implementation assumes the <see cref="Settings"/> instance contains two <see cref="ISettingsRepository"/>, one
+    /// for <see cref="SettingsScope.Project"/> and one for <see cref="SettingsScope.User"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <inheritdoc />
@@ -127,6 +136,7 @@ namespace UnityEditor.SettingsManagement
     {
         bool m_Initialized;
         string m_Key;
+        string m_Repository;
         T m_Value;
         T m_DefaultValue;
         SettingsScope m_Scope;
@@ -144,6 +154,25 @@ namespace UnityEditor.SettingsManagement
         public UserSetting(Settings settings, string key, T value, SettingsScope scope = SettingsScope.Project)
         {
             m_Key = key;
+            m_Repository = null;
+            m_Value = value;
+            m_Scope = scope;
+            m_Initialized = false;
+            m_Settings = settings;
+        }
+
+        /// <summary>
+        /// Constructor for UserSetting{T} type.
+        /// </summary>
+        /// <param name="settings">The <see cref="Settings"/> instance that this setting should be saved and loaded from.</param>
+        /// <param name="repository">The <see cref="ISettingsRepository"/> name that this setting should be saved and loaded from. Pass null to save to first available instance.</param>
+        /// <param name="key">The key for this value.</param>
+        /// <param name="value">The default value for this key.</param>
+        /// <param name="scope">The scope at which to save this setting.</param>
+        public UserSetting(Settings settings, string repository, string key, T value, SettingsScope scope = SettingsScope.Project)
+        {
+            m_Key = key;
+            m_Repository = repository;
             m_Value = value;
             m_Scope = scope;
             m_Initialized = false;
@@ -157,6 +186,15 @@ namespace UnityEditor.SettingsManagement
         public string key
         {
             get { return m_Key; }
+        }
+
+        /// <value>
+        /// The name of the repository that this setting is saved in.
+        /// </value>
+        /// <inheritdoc />
+        public string settingsRepositoryName
+        {
+            get { return m_Repository; }
         }
 
         /// <value>

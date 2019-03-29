@@ -29,12 +29,13 @@ namespace UnityEditor.SettingsManagement
 #endif
     {
         public const string developerModeCategory = "Developer Mode";
-        const string k_UserSettingsProviderSettingsPath = "ProjectSettings/UserSettingsProviderSettings.json";
+
+        const string k_SettingsName = "UserSettingsProviderSettings";
 
 #if SETTINGS_PROVIDER_ENABLED
         const int k_LabelWidth = 240;
 
-        int labelWidth
+        static int labelWidth
         {
             get
             {
@@ -45,7 +46,7 @@ namespace UnityEditor.SettingsManagement
             }
         }
 
-        int defaultLayoutMaxWidth
+        static int defaultLayoutMaxWidth
         {
             get
             {
@@ -91,13 +92,7 @@ namespace UnityEditor.SettingsManagement
             get
             {
                 if (s_Settings == null)
-                {
-                    s_Settings = new Settings(new ISettingsRepository[]
-                    {
-                        new ProjectSettingsRepository(k_UserSettingsProviderSettingsPath),
-                        new UserSettingsRepository()
-                    });
-                }
+                    s_Settings = new Settings(UserSettings.packageName);
 
                 return s_Settings;
             }
@@ -162,7 +157,6 @@ namespace UnityEditor.SettingsManagement
                 s_DefaultLayoutMaxWidth = window.PropertyType.GetProperty("s_DefaultLayoutMaxWidth", BindingFlags.Public | BindingFlags.Static);
             }
         }
-
 #endif
 
         struct PrefEntry
@@ -315,7 +309,6 @@ namespace UnityEditor.SettingsManagement
             if (GUILayout.Button(GUIContent.none, SettingsGUIStyles.settingsGizmo))
                 DoContextMenu();
         }
-
 #endif
 
         void InitSettingsBlockKeywords()

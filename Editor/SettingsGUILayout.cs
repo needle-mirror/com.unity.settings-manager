@@ -7,7 +7,7 @@ namespace UnityEditor.SettingsManagement
 {
     static class SettingsGUIStyles
     {
-        const string k_SettingsGearIcon = "Packages/com.unity.probuilder/Settings/Content/Options.png";
+        const string k_SettingsGearIcon = "Packages/" + UserSettings.packageName + "/Content/Options.png";
 
         static bool s_Initialized;
         public static GUIStyle s_SettingsGizmo;
@@ -84,15 +84,13 @@ namespace UnityEditor.SettingsManagement
         /// </summary>
         public class IndentedGroup : IDisposable
         {
-            bool m_EnabledState;
+            bool m_IsDisposed;
 
             /// <summary>
             /// Create an indented GUI section.
             /// </summary>
-            public IndentedGroup(bool enabled = true)
+            public IndentedGroup()
             {
-                m_EnabledState = GUI.enabled;
-                GUI.enabled = enabled;
                 EditorGUIUtility.labelWidth -= SettingsGUIStyles.indentedSettingBlock.padding.left - 4;
                 GUILayout.BeginVertical(SettingsGUIStyles.indentedSettingBlock);
             }
@@ -113,9 +111,11 @@ namespace UnityEditor.SettingsManagement
             /// </summary>
             public void Dispose()
             {
+                if (m_IsDisposed)
+                    return;
+                m_IsDisposed = true;
                 GUILayout.EndVertical();
                 EditorGUIUtility.labelWidth += SettingsGUIStyles.indentedSettingBlock.padding.left - 4;
-                GUI.enabled = m_EnabledState;
             }
         }
 
