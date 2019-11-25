@@ -53,8 +53,8 @@ namespace UnityEditor.SettingsManagement.Examples
             s_Settings = new Settings(new ISettingsRepository[]
             {
                 new UserSettingsRepository(),
-                new ProjectSettingsRepository("com.unity.settings-manager-examples", k_ProjectRepositories[0]),
-                new ProjectSettingsRepository("com.unity.settings-manager-examples", k_ProjectRepositories[1])
+                new PackageSettingsRepository("com.unity.settings-manager-examples", k_ProjectRepositories[0]),
+                new PackageSettingsRepository("com.unity.settings-manager-examples", k_ProjectRepositories[1])
             });
 
             m_Repository = s_Settings.Get<int>("ToolColorRepositoryName", SettingsScope.User);
@@ -76,7 +76,10 @@ namespace UnityEditor.SettingsManagement.Examples
             EditorGUI.BeginChangeCheck();
             m_ToolColor = EditorGUILayout.ColorField(m_ToolColor);
             if (EditorGUI.EndChangeCheck())
+            {
                 s_Settings.Set<Color>(k_ToolColorSetting, m_ToolColor, k_ProjectRepositories[m_Repository]);
+                s_Settings.Save();
+            }
 
             GUILayout.EndVertical();
 

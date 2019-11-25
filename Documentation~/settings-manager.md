@@ -17,7 +17,7 @@ namespace UnityEditor.SettingsManagement.Examples
 {
     static class MySettingsManager
     {
-        internal const string k_ProjectSettingsPath = "ProjectSettings/MySettingsExample.json";
+        internal const string k_PackageName = "com.unity.my-settings-example";
 
         static Settings s_Instance;
 
@@ -26,11 +26,7 @@ namespace UnityEditor.SettingsManagement.Examples
             get
             {
                 if (s_Instance == null)
-                    s_Instance = new Settings(new ISettingsRepository[]
-                    {
-                        new ProjectSettingsRepository(k_ProjectSettingsPath),
-                        new UserSettingsRepository()
-                    });
+                    s_Instance = new Settings(k_PackageName);
 
                 return s_Instance;
             }

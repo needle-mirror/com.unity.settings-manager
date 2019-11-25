@@ -1,7 +1,7 @@
 {
   "name": "com.unity.settings-manager",
   "displayName": "Settings Manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2018.3",
   "description": "A framework for making any serializable field a setting, complete with a pre-built settings interface.",
   "dependencies": {},
@@ -15,6 +15,6 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:Unity-Technologies/com.unity.settings-manager.git",
-    "revision": "4ad6e8b570fe0de32e5603d583851618faf7c9ae"
+    "revision": "4e1ab5cb77b40205e6bf01d377846a851232c4e3"
   }
 }

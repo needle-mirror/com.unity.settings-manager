@@ -92,7 +92,7 @@ namespace UnityEditor.SettingsManagement
             get
             {
                 if (s_Settings == null)
-                    s_Settings = new Settings(UserSettings.packageName);
+                    s_Settings = new Settings(new [] { new UserSettingsRepository() });
 
                 return s_Settings;
             }
@@ -410,7 +410,11 @@ namespace UnityEditor.SettingsManagement
 
 #if UNITY_2019_1_OR_NEWER
                 menu.AddSeparator("Developer/");
+#if UNITY_2020_1_OR_NEWER
+                menu.AddItem(new GUIContent("Developer/Recompile Scripts"), false, EditorUtility.RequestScriptReload);
+#else
                 menu.AddItem(new GUIContent("Developer/Recompile Scripts"), false, UnityEditorInternal.InternalEditorUtility.RequestScriptReload);
+#endif
 #endif
             }
 

@@ -56,6 +56,8 @@ namespace UnityEditor.SettingsManagement
                 m_Dictionary = null;
                 var json = File.ReadAllText(path);
                 EditorJsonUtility.FromJsonOverwrite(json, this);
+                if(m_Dictionary == null)
+                    m_Dictionary = new SettingsDictionary();
             }
         }
 
@@ -118,7 +120,25 @@ namespace UnityEditor.SettingsManagement
                 Directory.CreateDirectory(directory);
             }
 
-            File.WriteAllText(path, EditorJsonUtility.ToJson(this, k_PrettyPrintJson));
+#if UNITY_2019_3_OR_NEWER
+            if (!AssetDatabase.IsOpenForEdit(path))
+            {
+                if (!AssetDatabase.MakeEditable(path))
+                {
+                    Debug.LogWarning($"Could not save package settings to {path}");
+                    return;
+                }
+            }
+#endif
+
+            try
+            {
+                File.WriteAllText(path, EditorJsonUtility.ToJson(this, k_PrettyPrintJson));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Debug.LogWarning($"Could not save package settings to {path}");
+            }
         }
 
         /// <summary>
