@@ -3,6 +3,9 @@
     "references": [
         "Unity.Settings.Editor"
     ],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "optionalUnityReferences": [
         "TestAssemblies"
     ],

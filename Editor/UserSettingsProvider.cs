@@ -139,7 +139,6 @@ namespace UnityEditor.SettingsManagement
         }
 
 #if SETTINGS_PROVIDER_ENABLED
-
         /// <summary>
         /// Invoked by the SettingsProvider when activated in the Editor.
         /// </summary>
@@ -410,7 +409,7 @@ namespace UnityEditor.SettingsManagement
 
 #if UNITY_2019_1_OR_NEWER
                 menu.AddSeparator("Developer/");
-#if UNITY_2020_1_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
                 menu.AddItem(new GUIContent("Developer/Recompile Scripts"), false, EditorUtility.RequestScriptReload);
 #else
                 menu.AddItem(new GUIContent("Developer/Recompile Scripts"), false, UnityEditorInternal.InternalEditorUtility.RequestScriptReload);
