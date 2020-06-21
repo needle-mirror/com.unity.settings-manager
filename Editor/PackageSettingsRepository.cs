@@ -25,6 +25,8 @@ namespace UnityEditor.SettingsManagement
         [SerializeField]
         SettingsDictionary m_Dictionary = new SettingsDictionary();
 
+        string m_cachedJson;
+
         /// <summary>
         /// Constructor sets the serialized data path.
         /// </summary>
@@ -54,9 +56,9 @@ namespace UnityEditor.SettingsManagement
             if (File.Exists(path))
             {
                 m_Dictionary = null;
-                var json = File.ReadAllText(path);
-                EditorJsonUtility.FromJsonOverwrite(json, this);
-                if(m_Dictionary == null)
+                m_cachedJson = File.ReadAllText(path);
+                EditorJsonUtility.FromJsonOverwrite(m_cachedJson, this);
+                if (m_Dictionary == null)
                     m_Dictionary = new SettingsDictionary();
             }
         }
@@ -110,6 +112,7 @@ namespace UnityEditor.SettingsManagement
         /// Save all settings to their serialized state.
         /// </summary>
         /// <inheritdoc cref="ISettingsRepository.Save"/>
+
         public void Save()
         {
             Init();
@@ -120,8 +123,11 @@ namespace UnityEditor.SettingsManagement
                 Directory.CreateDirectory(directory);
             }
 
+            string newSettingsJson = EditorJsonUtility.ToJson(this, k_PrettyPrintJson);
+            bool areJsonsEqual = newSettingsJson == m_cachedJson;
+
 #if UNITY_2019_3_OR_NEWER
-            if (!AssetDatabase.IsOpenForEdit(path))
+            if (!AssetDatabase.IsOpenForEdit(path) && areJsonsEqual == false)
             {
                 if (!AssetDatabase.MakeEditable(path))
                 {
@@ -133,7 +139,11 @@ namespace UnityEditor.SettingsManagement
 
             try
             {
-                File.WriteAllText(path, EditorJsonUtility.ToJson(this, k_PrettyPrintJson));
+                if (!areJsonsEqual)
+                {
+                    File.WriteAllText(path, newSettingsJson);
+                    m_cachedJson = newSettingsJson;
+                }
             }
             catch (UnauthorizedAccessException)
             {
