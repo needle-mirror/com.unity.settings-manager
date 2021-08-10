@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.IO;
 using NUnit.Framework;
 using UnityEditor;
@@ -8,16 +7,13 @@ using UnityEngine.TestTools;
 
 namespace UnityEngine.SettingsManagement.EditorTests
 {
-	class SettingsTests : IPrebuildSetup, IPostBuildCleanup
+	class SettingsTests : SettingsTestBase, IPrebuildSetup, IPostBuildCleanup
 	{
-		const string k_PackageName = "com.unity.settings-manager";
-		const string k_SettingsFile = "SettingsTests";
-
 		static Settings s_Settings;
 
 		static string projectSettingsPath
 		{
-			get { return PackageSettingsRepository.GetSettingsPath(k_PackageName, k_SettingsFile); }
+			get { return PackageSettingsRepository.GetSettingsPath(k_PackageName); }
 		}
 
 		static Settings settings
@@ -176,270 +172,214 @@ namespace UnityEngine.SettingsManagement.EditorTests
 		[Test]
 		public static void DefaultsAreCorrect()
 		{
-			try
-			{
-				foreach (var pref in s_AllPreferences)
-					pref.Reset();
+			foreach (var pref in s_AllPreferences)
+				pref.Reset();
 
-				Assert.IsTrue((bool)s_StaticBoolUser, s_StaticBoolUser.ToString());
-				Assert.IsTrue((bool)s_StaticBoolProject, s_StaticBoolProject.ToString());
+			Assert.IsTrue((bool)s_StaticBoolUser, s_StaticBoolUser.ToString());
+			Assert.IsTrue((bool)s_StaticBoolProject, s_StaticBoolProject.ToString());
 
-				Assert.AreEqual("Hello, world!", (string)s_StaticStringUser, s_StaticStringUser.ToString());
-				Assert.AreEqual("Goodbye, world!", (string)s_StaticStringProject, s_StaticStringProject.ToString());
+			Assert.AreEqual("Hello, world!", (string)s_StaticStringUser, s_StaticStringUser.ToString());
+			Assert.AreEqual("Goodbye, world!", (string)s_StaticStringProject, s_StaticStringProject.ToString());
 
-				Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser, s_StaticStructUser.ToString());
-				Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject, s_StaticStructProject.ToString());
+			Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser, s_StaticStructUser.ToString());
+			Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject, s_StaticStructProject.ToString());
 
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser, s_StaticClassUser.ToString());
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject, s_StaticClassProject.ToString());
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser, s_StaticClassUser.ToString());
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject, s_StaticClassProject.ToString());
 		}
 
 		[Test]
 		public static void SetValue()
 		{
-			try
-			{
-				// BOOl
-				s_StaticBoolUser.value = false;
-				s_StaticBoolProject.value = false;
+			// BOOl
+			s_StaticBoolUser.value = false;
+			s_StaticBoolProject.value = false;
 
-				Assert.IsFalse((bool)s_StaticBoolUser);
-				Assert.IsFalse((bool)s_StaticBoolProject);
+			Assert.IsFalse((bool)s_StaticBoolUser);
+			Assert.IsFalse((bool)s_StaticBoolProject);
 
-				// STRING
-				s_StaticStringUser.value = "Some more text";
-				s_StaticStringProject.value = "Some text here";
+			// STRING
+			s_StaticStringUser.value = "Some more text";
+			s_StaticStringProject.value = "Some text here";
 
-				Assert.AreEqual("Some more text", (string)s_StaticStringUser);
-				Assert.AreEqual("Some text here", (string)s_StaticStringProject);
+			Assert.AreEqual("Some more text", (string)s_StaticStringUser);
+			Assert.AreEqual("Some text here", (string)s_StaticStringProject);
 
-				// STRUCT
-				var userStruct = new DummyStruct("Changed text", 23);
-				var projectStruct = new DummyStruct("Slightly different text", -9825);
+			// STRUCT
+			var userStruct = new DummyStruct("Changed text", 23);
+			var projectStruct = new DummyStruct("Slightly different text", -9825);
 
-				s_StaticStructUser.SetValue(userStruct);
-				s_StaticStructProject.SetValue(projectStruct);
+			s_StaticStructUser.SetValue(userStruct);
+			s_StaticStructProject.SetValue(projectStruct);
 
-				Assert.AreEqual(userStruct, (DummyStruct)s_StaticStructUser);
-				Assert.AreEqual(projectStruct, (DummyStruct)s_StaticStructProject);
+			Assert.AreEqual(userStruct, (DummyStruct)s_StaticStructUser);
+			Assert.AreEqual(projectStruct, (DummyStruct)s_StaticStructProject);
 
-				// CLASS
-				var userClass = new DummyClass("Changed text", 23);
-				var projectClass = new DummyClass("Slightly different text", -9825);
+			// CLASS
+			var userClass = new DummyClass("Changed text", 23);
+			var projectClass = new DummyClass("Slightly different text", -9825);
 
-				s_StaticClassUser.SetValue(userClass);
-				s_StaticClassProject.SetValue(projectClass);
+			s_StaticClassUser.SetValue(userClass);
+			s_StaticClassProject.SetValue(projectClass);
 
-				Assert.AreEqual(userClass, (DummyClass)s_StaticClassUser);
-				Assert.AreEqual(projectClass, (DummyClass)s_StaticClassProject);
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.AreEqual(userClass, (DummyClass)s_StaticClassUser);
+			Assert.AreEqual(projectClass, (DummyClass)s_StaticClassProject);
 		}
 
 		[Test]
 		public static void SetAndReset()
 		{
-			try
-			{
-				// BOOL
-				s_StaticBoolUser.value = false;
-				s_StaticBoolProject.value = false;
+			// BOOL
+			s_StaticBoolUser.value = false;
+			s_StaticBoolProject.value = false;
 
-				// STRING
-				s_StaticStringUser.value = "Some more text";
-				s_StaticStringProject.value = "Some text here";
+			// STRING
+			s_StaticStringUser.value = "Some more text";
+			s_StaticStringProject.value = "Some text here";
 
-				// STRUCT
-				s_StaticStructUser.SetValue(new DummyStruct("Changed text", 23));
-				s_StaticStructProject.SetValue(new DummyStruct("Slightly different text", -9825));
+			// STRUCT
+			s_StaticStructUser.SetValue(new DummyStruct("Changed text", 23));
+			s_StaticStructProject.SetValue(new DummyStruct("Slightly different text", -9825));
 
-				// CLASS
-				s_StaticClassUser.SetValue(new DummyClass("Changed text", 23));
-				s_StaticClassProject.SetValue(new DummyClass("Slightly different text", -9825));
+			// CLASS
+			s_StaticClassUser.SetValue(new DummyClass("Changed text", 23));
+			s_StaticClassProject.SetValue(new DummyClass("Slightly different text", -9825));
 
-				Assert.IsFalse((bool)s_StaticBoolUser);
-				Assert.IsFalse((bool)s_StaticBoolProject);
+			Assert.IsFalse((bool)s_StaticBoolUser);
+			Assert.IsFalse((bool)s_StaticBoolProject);
 
-				Assert.AreNotEqual("Hello, world!", (string)s_StaticStringUser);
-				Assert.AreNotEqual("Goodbye, world!", (string)s_StaticStringProject);
+			Assert.AreNotEqual("Hello, world!", (string)s_StaticStringUser);
+			Assert.AreNotEqual("Goodbye, world!", (string)s_StaticStringProject);
 
-				Assert.AreNotEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser);
-				Assert.AreNotEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject);
+			Assert.AreNotEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser);
+			Assert.AreNotEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject);
 
-				Assert.AreNotEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
-				Assert.AreNotEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
+			Assert.AreNotEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
+			Assert.AreNotEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
 
-				foreach (var pref in s_AllPreferences)
-					pref.Reset();
+			foreach (var pref in s_AllPreferences)
+				pref.Reset();
 
-				Assert.IsTrue((bool)s_StaticBoolUser);
-				Assert.IsTrue((bool)s_StaticBoolProject);
+			Assert.IsTrue((bool)s_StaticBoolUser);
+			Assert.IsTrue((bool)s_StaticBoolProject);
 
-				Assert.AreEqual("Hello, world!", (string)s_StaticStringUser);
-				Assert.AreEqual("Goodbye, world!", (string)s_StaticStringProject);
+			Assert.AreEqual("Hello, world!", (string)s_StaticStringUser);
+			Assert.AreEqual("Goodbye, world!", (string)s_StaticStringProject);
 
-				Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser);
-				Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject);
+			Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructUser);
+			Assert.AreEqual(DummyStruct.defaultValue, (DummyStruct)s_StaticStructProject);
 
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
 			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
-		}
 
 		[Test]
 		public static void SerializeAndLoad()
 		{
-			try
-			{
-				foreach (var pref in s_AllPreferences)
-					pref.Reset();
-				settings.Save();
+			foreach (var pref in s_AllPreferences)
+				pref.Reset();
+			settings.Save();
 
-				var instance = new Settings(k_PackageName);
+			var instance = new Settings(k_PackageName);
 
-				Assert.AreEqual((bool)s_StaticBoolUser, instance.Get<bool>(s_StaticBoolUser.key, s_StaticBoolUser.scope));
-				Assert.AreEqual((bool)s_StaticBoolProject, instance.Get<bool>(s_StaticBoolProject.key, s_StaticBoolProject.scope));
-				Assert.AreEqual((string)s_StaticStringUser, instance.Get<string>(s_StaticStringUser.key, s_StaticStringUser.scope));
-				Assert.AreEqual((string)s_StaticStringProject, instance.Get<string>(s_StaticStringProject.key, s_StaticStringProject.scope));
-				Assert.AreEqual((DummyStruct)s_StaticStructUser, instance.Get<DummyStruct>(s_StaticStructUser.key, s_StaticStructUser.scope));
-				Assert.AreEqual((DummyStruct)s_StaticStructProject, instance.Get<DummyStruct>(s_StaticStructProject.key, s_StaticStructProject.scope));
-				Assert.AreEqual((DummyClass)s_StaticClassUser, instance.Get<DummyClass>(s_StaticClassUser.key, s_StaticClassUser.scope));
-				Assert.AreEqual((DummyClass)s_StaticClassProject, instance.Get<DummyClass>(s_StaticClassProject.key, s_StaticClassProject.scope));
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.AreEqual((bool)s_StaticBoolUser, instance.Get<bool>(s_StaticBoolUser.key, s_StaticBoolUser.scope));
+			Assert.AreEqual((bool)s_StaticBoolProject, instance.Get<bool>(s_StaticBoolProject.key, s_StaticBoolProject.scope));
+			Assert.AreEqual((string)s_StaticStringUser, instance.Get<string>(s_StaticStringUser.key, s_StaticStringUser.scope));
+			Assert.AreEqual((string)s_StaticStringProject, instance.Get<string>(s_StaticStringProject.key, s_StaticStringProject.scope));
+			Assert.AreEqual((DummyStruct)s_StaticStructUser, instance.Get<DummyStruct>(s_StaticStructUser.key, s_StaticStructUser.scope));
+			Assert.AreEqual((DummyStruct)s_StaticStructProject, instance.Get<DummyStruct>(s_StaticStructProject.key, s_StaticStructProject.scope));
+			Assert.AreEqual((DummyClass)s_StaticClassUser, instance.Get<DummyClass>(s_StaticClassUser.key, s_StaticClassUser.scope));
+			Assert.AreEqual((DummyClass)s_StaticClassProject, instance.Get<DummyClass>(s_StaticClassProject.key, s_StaticClassProject.scope));
 		}
 
 		[Test]
 		public static void DeleteKeys()
 		{
-			try
-			{
-				foreach (var pref in s_AllPreferences)
-					pref.Delete();
+			foreach (var pref in s_AllPreferences)
+				pref.Delete();
 
-				settings.Save();
+			settings.Save();
 
-				var instance = new Settings(k_PackageName);
+			var instance = new Settings(k_PackageName);
 
-				Assert.IsFalse(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
-				Assert.IsFalse(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
-				Assert.IsFalse(instance.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
-				Assert.IsFalse(instance.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
-				Assert.IsFalse(instance.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
-				Assert.IsFalse(instance.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
-				Assert.IsFalse(instance.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
-				Assert.IsFalse(instance.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.IsFalse(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
+			Assert.IsFalse(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
+			Assert.IsFalse(instance.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
+			Assert.IsFalse(instance.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
+			Assert.IsFalse(instance.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
+			Assert.IsFalse(instance.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
+			Assert.IsFalse(instance.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
+			Assert.IsFalse(instance.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
 		}
 
 		[Test]
 		public static void KeysExistInSettingsInstance()
 		{
-			try
-			{
-				foreach (var pref in s_AllPreferences)
-					pref.Reset();
+			foreach (var pref in s_AllPreferences)
+				pref.Reset();
 
-				settings.Save();
+			settings.Save();
 
-				Assert.IsTrue(settings.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
-				Assert.IsTrue(settings.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
-				Assert.IsTrue(settings.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
-				Assert.IsTrue(settings.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
-				Assert.IsTrue(settings.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
-				Assert.IsTrue(settings.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
-				Assert.IsTrue(settings.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
-				Assert.IsTrue(settings.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.IsTrue(settings.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
+			Assert.IsTrue(settings.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
+			Assert.IsTrue(settings.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
+			Assert.IsTrue(settings.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
+			Assert.IsTrue(settings.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
+			Assert.IsTrue(settings.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
+			Assert.IsTrue(settings.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
+			Assert.IsTrue(settings.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
 		}
 
 		[Test]
 		public static void KeysExistInSerializedForm()
 		{
-			try
-			{
-				foreach (var pref in s_AllPreferences)
-					pref.Reset();
+			foreach (var pref in s_AllPreferences)
+				pref.Reset();
 
-				settings.Save();
+			settings.Save();
 
-				var instance = new Settings(k_PackageName);
+			var instance = new Settings(k_PackageName);
 
-				Assert.IsTrue(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
-				Assert.IsTrue(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
-				Assert.IsTrue(instance.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
-				Assert.IsTrue(instance.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
-				Assert.IsTrue(instance.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
-				Assert.IsTrue(instance.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
-				Assert.IsTrue(instance.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
-				Assert.IsTrue(instance.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.IsTrue(instance.ContainsKey<bool>("tests.user.static.bool", SettingsScope.User), "tests.user.static.bool");
+			Assert.IsTrue(instance.ContainsKey<bool>("tests.project.static.bool", SettingsScope.Project), "tests.project.static.bool");
+			Assert.IsTrue(instance.ContainsKey<string>("tests.user.static.string", SettingsScope.User), "tests.user.static.string");
+			Assert.IsTrue(instance.ContainsKey<string>("tests.project.static.string", SettingsScope.Project), "tests.project.static.string");
+			Assert.IsTrue(instance.ContainsKey<DummyStruct>("tests.user.static.struct", SettingsScope.User), "tests.user.static.struct");
+			Assert.IsTrue(instance.ContainsKey<DummyStruct>("tests.project.static.struct", SettingsScope.Project), "tests.project.static.struct");
+			Assert.IsTrue(instance.ContainsKey<DummyClass>("tests.user.static.class", SettingsScope.User), "tests.user.static.class");
+			Assert.IsTrue(instance.ContainsKey<DummyClass>("tests.project.static.class", SettingsScope.Project), "tests.project.static.class");
 		}
 
 		[Test]
 		public static void ChangingClassValuesSaves()
 		{
-			try
-			{
-				s_StaticClassUser.Reset();
-				s_StaticClassProject.Reset();
+			s_StaticClassUser.Reset();
+			s_StaticClassProject.Reset();
 
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
-				Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassUser);
+			Assert.AreEqual(DummyClass.defaultValue, (DummyClass)s_StaticClassProject);
 
-				var userReference = s_StaticClassUser.value;
-				var projectReference = s_StaticClassProject.value;
+			var userReference = s_StaticClassUser.value;
+			var projectReference = s_StaticClassProject.value;
 
-				userReference.intValue = 200;
-				projectReference.intValue = 200;
+			userReference.intValue = 200;
+			projectReference.intValue = 200;
 
-				s_StaticClassProject.ApplyModifiedProperties();
-				s_StaticClassUser.ApplyModifiedProperties();
+			s_StaticClassProject.ApplyModifiedProperties();
+			s_StaticClassUser.ApplyModifiedProperties();
 
-				Assert.IsTrue(ReferenceEquals(s_StaticClassProject.value, projectReference));
-				Assert.IsTrue(ReferenceEquals(s_StaticClassUser.value, userReference));
+			Assert.IsTrue(ReferenceEquals(s_StaticClassProject.value, projectReference));
+			Assert.IsTrue(ReferenceEquals(s_StaticClassUser.value, userReference));
 
-				Assert.AreEqual(200, s_StaticClassUser.value.intValue, "After ApplyModifiedProperties");
-				Assert.AreEqual(200, s_StaticClassProject.value.intValue, "After ApplyModifiedProperties");
+			Assert.AreEqual(200, s_StaticClassUser.value.intValue, "After ApplyModifiedProperties");
+			Assert.AreEqual(200, s_StaticClassProject.value.intValue, "After ApplyModifiedProperties");
 
-				settings.Save();
+			settings.Save();
 
-				var instance = new Settings(k_PackageName);
+			var instance = new Settings(k_PackageName);
 
-				Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassUser.key, s_StaticClassUser.scope).intValue, "Reload Settings Instance");
-				Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassProject.key, s_StaticClassProject.scope).intValue, "Reload Settings Instance");
-			}
-			catch (Exception e)
-			{
-				Debug.LogError(e.ToString());
-			}
+			Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassUser.key, s_StaticClassUser.scope).intValue, "Reload Settings Instance");
+			Assert.AreEqual(200, instance.Get<DummyClass>(s_StaticClassProject.key, s_StaticClassProject.scope).intValue, "Reload Settings Instance");
 		}
 	}
 }

@@ -105,19 +105,9 @@ namespace UnityEditor.SettingsManagement
         /// <typeparam name="T">Type of value.</typeparam>
         public void Set<T>(string key, T value, SettingsScope scope = SettingsScope.Project)
         {
-            bool foundScopeRepository = false;
-
-            foreach (var repo in m_SettingsRepositories)
-            {
-                if (repo.scope == scope)
-                {
-                    repo.Set<T>(key, value);
-                    foundScopeRepository = true;
-                }
-            }
-
-            if (!foundScopeRepository)
-                Debug.LogWarning("No repository for scope " + scope + " found!");
+            if (scope == SettingsScope.Project)
+                Set<T, PackageSettingsRepository>(key, value);
+            Set<T, UserSettingsRepository>(key, value);
         }
 
         /// <summary>
@@ -125,16 +115,31 @@ namespace UnityEditor.SettingsManagement
         /// </summary>
         /// <param name="key">The settings key.</param>
         /// <param name="value">The value to set. Must be serializable.</param>
-        /// <param name="repositoryName">The repository name to match.</param>
+        /// <param name="repositoryName">If provided, only repositories with a matching name will be considered.</param>
         /// <param name="scope">Which scope this settings should be saved in.</param>
         /// <typeparam name="T">Type of value.</typeparam>
         public void Set<T>(string key, T value, string repositoryName, SettingsScope scope = SettingsScope.Project)
+        {
+            if (scope == SettingsScope.Project)
+                Set<T, PackageSettingsRepository>(key, value, repositoryName);
+            Set<T, UserSettingsRepository>(key, value, repositoryName);
+        }
+
+        /// <summary>
+        /// Set a value for key of type T.
+        /// </summary>
+        /// <param name="key">The settings key.</param>
+        /// <param name="value">The value to set. Must be serializable.</param>
+        /// <param name="repositoryName">The name of the repository to set this value in.</param>
+        /// <typeparam name="T">Type of value.</typeparam>
+        /// <typeparam name="K">Type of repository to set this value for.</typeparam>
+        public void Set<T, K>(string key, T value, string repositoryName = null) where K : ISettingsRepository
         {
             bool foundScopeRepository = false;
 
             foreach (var repo in m_SettingsRepositories)
             {
-                if (repo.scope == scope && string.Equals(repo.name, repositoryName))
+                if (repo is K && (string.IsNullOrEmpty(repositoryName) || repo.name == repositoryName))
                 {
                     repo.Set<T>(key, value);
                     foundScopeRepository = true;
@@ -142,7 +147,7 @@ namespace UnityEditor.SettingsManagement
             }
 
             if (!foundScopeRepository)
-                Debug.LogWarning("No repository matching name \"" + repositoryName + "\" and scope " + scope + " found in settings.");
+                Debug.LogWarning($"No repository with type {typeof(K)} found.");
         }
 
         /// <summary>
@@ -154,14 +159,9 @@ namespace UnityEditor.SettingsManagement
         /// <typeparam name="T">Type of value to search for.</typeparam>
         public T Get<T>(string key, SettingsScope scope = SettingsScope.Project, T fallback = default(T))
         {
-            foreach (var repo in m_SettingsRepositories)
-            {
-                if (repo.scope == scope)
-                    return repo.Get<T>(key, fallback);
-            }
-
-            Debug.LogWarning("No repository for scope " + scope + " found!");
-            return fallback;
+            if (scope == SettingsScope.Project)
+                return Get<T, PackageSettingsRepository>(key, fallback);
+            return Get<T, UserSettingsRepository>(key, fallback);
         }
 
         /// <summary>
@@ -174,13 +174,28 @@ namespace UnityEditor.SettingsManagement
         /// <typeparam name="T">Type of value to search for.</typeparam>
         public T Get<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project, T fallback = default(T))
         {
+            if (scope == SettingsScope.Project)
+                return Get<T, PackageSettingsRepository>(key, fallback, repositoryName);
+            return Get<T, UserSettingsRepository>(key, fallback, repositoryName);
+        }
+
+        /// <summary>
+        /// Get a value with key of type T, or return the fallback value if no matching key is found.
+        /// </summary>
+        /// <param name="key">The settings key.</param>
+        /// <param name="fallback">If no key with a value of type T is found, this value is returned.</param>
+        /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
+        /// <typeparam name="T">Type of value to search for.</typeparam>
+        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
+        public T Get<T, K>(string key, T fallback = default(T), string repositoryName = null) where K : ISettingsRepository
+        {
             foreach (var repo in m_SettingsRepositories)
             {
-                if (repo.scope == scope && string.Equals(repo.name, repositoryName))
+                if (repo is K && (string.IsNullOrEmpty(repositoryName) || repo.name == repositoryName))
                     return repo.Get<T>(key, fallback);
             }
 
-            Debug.LogWarning("No repository matching name \"" + repositoryName + "\" and scope " + scope + " found in settings.");
+            Debug.LogWarning($"No repository with type {typeof(K)} found.");
             return fallback;
         }
 
@@ -193,14 +208,9 @@ namespace UnityEditor.SettingsManagement
         /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
         public bool ContainsKey<T>(string key, SettingsScope scope = SettingsScope.Project)
         {
-            foreach (var repo in m_SettingsRepositories)
-            {
-                if (repo.scope == scope)
-                    return repo.ContainsKey<T>(key);
-            }
-
-            Debug.LogWarning("No repository for scope " + scope + " found!");
-            return false;
+            if (scope == SettingsScope.Project)
+                return ContainsKey<T, PackageSettingsRepository>(key);
+            return ContainsKey<T, UserSettingsRepository>(key);
         }
 
         /// <summary>
@@ -213,13 +223,28 @@ namespace UnityEditor.SettingsManagement
         /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
         public bool ContainsKey<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project)
         {
+            if (scope == SettingsScope.Project)
+                return ContainsKey<T, PackageSettingsRepository>(key, repositoryName);
+            return ContainsKey<T, UserSettingsRepository>(key, repositoryName);
+        }
+
+        /// <summary>
+        /// Does the repository contain a setting with key and type.
+        /// </summary>
+        /// <param name="key">The settings key.</param>
+        /// <typeparam name="T">The type of value to search for.</typeparam>
+        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
+        /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
+        /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
+        public bool ContainsKey<T, K>(string key, string repositoryName = null) where K : ISettingsRepository
+        {
             foreach (var repo in m_SettingsRepositories)
             {
-                if (repo.scope == scope && string.Equals(repo.name, repositoryName))
+                if (repo is K && (string.IsNullOrEmpty(repositoryName) || repositoryName == repo.name))
                     return repo.ContainsKey<T>(key);
             }
 
-            Debug.LogWarning("No repository matching name \"" + repositoryName + "\" and scope " + scope + " found in settings.");
+            Debug.LogWarning($"No repository with type {typeof(K)} found.");
             return false;
         }
 
@@ -231,19 +256,9 @@ namespace UnityEditor.SettingsManagement
         /// <typeparam name="T">The type that this key is pointing to.</typeparam>
         public void DeleteKey<T>(string key, SettingsScope scope = SettingsScope.Project)
         {
-            bool foundScopeRepository = false;
-
-            foreach (var repo in m_SettingsRepositories)
-            {
-                if (repo.scope == scope)
-                {
-                    foundScopeRepository = true;
-                    repo.Remove<T>(key);
-                }
-            }
-
-            if (!foundScopeRepository)
-                Debug.LogWarning("No repository for scope " + scope + " found!");
+            if (scope == SettingsScope.Project)
+                DeleteKey<T, PackageSettingsRepository>(key);
+            DeleteKey<T, UserSettingsRepository>(key);
         }
 
         /// <summary>
@@ -255,19 +270,33 @@ namespace UnityEditor.SettingsManagement
         /// <typeparam name="T">The type that this key is pointing to.</typeparam>
         public void DeleteKey<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project)
         {
+            if (scope == SettingsScope.Project)
+                DeleteKey<T, PackageSettingsRepository>(key, repositoryName);
+            DeleteKey<T, UserSettingsRepository>(key, repositoryName);
+        }
+
+        /// <summary>
+        /// Remove a key value pair from a settings repository.
+        /// </summary>
+        /// <param name="key">The key to remove.</param>
+        /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
+        /// <typeparam name="T">The type that this key is pointing to.</typeparam>
+        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
+        public void DeleteKey<T, K>(string key, string repositoryName = null) where K : ISettingsRepository
+        {
             bool foundScopeRepository = false;
 
             foreach (var repo in m_SettingsRepositories)
             {
-                if (repo.scope == scope && string.Equals(repo.name, repositoryName))
+                if (repo is K && (string.IsNullOrEmpty(repositoryName) || repositoryName == repo.name))
                 {
                     foundScopeRepository = true;
                     repo.Remove<T>(key);
                 }
             }
 
-            if (!foundScopeRepository)
-                Debug.LogWarning("No repository matching name \"" + repositoryName + "\" and scope " + scope + " found in settings.");
+            if(!foundScopeRepository)
+                Debug.LogWarning($"No repository with type {typeof(K)} found.");
         }
     }
 }

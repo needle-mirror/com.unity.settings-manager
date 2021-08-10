@@ -4,18 +4,17 @@ using UnityEditor.SettingsManagement;
 
 namespace UnityEngine.SettingsManagement.EditorTests
 {
-	class MultipleProjectSettings
+	class MultipleProjectSettings : SettingsTestBase
 	{
-		const string k_MultipleSettingFilesPackageName = "com.unity.settings-manager.tests";
 		const string k_SettingsFileA = "FileA";
 		const string k_SettingsFileB = "FileB";
 
 		[TearDown]
 		public void Teardown()
 		{
-			var expectedPath = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName);
-			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, k_SettingsFileA);
-			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, k_SettingsFileB);
+			var expectedPath = PackageSettingsRepository.GetSettingsPath(k_PackageName);
+			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_PackageName, k_SettingsFileA);
+			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_PackageName, k_SettingsFileB);
 
 			if(File.Exists(expectedPath))
 				File.Delete(expectedPath);
@@ -30,11 +29,11 @@ namespace UnityEngine.SettingsManagement.EditorTests
 		[Test]
 		public void NewSettingsInstance_CreatesUserAndProjectSettings()
 		{
-			var expectedPath = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName);
+			var expectedPath = PackageSettingsRepository.GetSettingsPath(k_PackageName);
 
 			Assume.That(File.Exists(expectedPath), Is.False);
 
-			var settings = new Settings(k_MultipleSettingFilesPackageName);
+			var settings = new Settings(k_PackageName);
 			settings.Save();
 
 			Assert.That(File.Exists(expectedPath), Is.True);
@@ -43,16 +42,16 @@ namespace UnityEngine.SettingsManagement.EditorTests
 		[Test]
 		public void NewSettingsInstance_SupportsMultipleProjectRepositories()
 		{
-			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, "FileA");
-			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, "FileB");
+			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_PackageName, "FileA");
+			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_PackageName, "FileB");
 
 			Assume.That(File.Exists(expectedPathA), Is.False);
 			Assume.That(File.Exists(expectedPathB), Is.False);
 
 			var settings = new Settings(new ISettingsRepository[]
 			{
-				new PackageSettingsRepository(k_MultipleSettingFilesPackageName, "FileA"),
-				new PackageSettingsRepository(k_MultipleSettingFilesPackageName, "FileB")
+				new PackageSettingsRepository(k_PackageName, "FileA"),
+				new PackageSettingsRepository(k_PackageName, "FileB")
 			});
 
 			settings.Save();
@@ -64,16 +63,16 @@ namespace UnityEngine.SettingsManagement.EditorTests
 		[Test]
 		public void MultipleNamedProjectSettings_StoreSettingsSeparately()
 		{
-			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, "FileA");
-			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_MultipleSettingFilesPackageName, "FileB");
+			var expectedPathA = PackageSettingsRepository.GetSettingsPath(k_PackageName, "FileA");
+			var expectedPathB = PackageSettingsRepository.GetSettingsPath(k_PackageName, "FileB");
 
 			Assume.That(File.Exists(expectedPathA), Is.False);
 			Assume.That(File.Exists(expectedPathB), Is.False);
 
 			var settings = new Settings(new ISettingsRepository[]
 			{
-				new PackageSettingsRepository(k_MultipleSettingFilesPackageName, "FileA"),
-				new PackageSettingsRepository(k_MultipleSettingFilesPackageName, "FileB")
+				new PackageSettingsRepository(k_PackageName, "FileA"),
+				new PackageSettingsRepository(k_PackageName, "FileB")
 			});
 
 			settings.Set<int>("value_a", 32, "FileA");

@@ -146,6 +146,8 @@ namespace UnityEditor.SettingsManagement
         /// <param name="rootElement"></param>
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
+            base.OnActivate(searchContext, rootElement);
+
             SearchForUserSettingAttributes();
 
             var window = GetType().GetProperty("settingsWindow", BindingFlags.Instance | BindingFlags.NonPublic);
