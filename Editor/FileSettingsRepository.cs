@@ -4,21 +4,22 @@ using UnityEngine;
 
 namespace UnityEditor.SettingsManagement
 {
-    /// <inheritdoc />
     /// <summary>
-    /// A settings repository that stores data serialized to a JSON file.
+    /// Represents a settings repository that stores data serialized to a JSON file.
     /// </summary>
     [Serializable]
     public class FileSettingsRepository : ISettingsRepository
     {
-        /// <value>
-        /// Package settings that are saved in the ProjectSettings directory.
-        /// </value>
+        /// <summary>
+        /// Location of where the package settings are saved under the `ProjectSettings` directory.
+        /// </summary>
+        /// <returns>The folder where package settings are saved under the `ProjectSettings` directory.</returns>
         protected const string k_PackageSettingsDirectory = "ProjectSettings/Packages";
 
-        /// <value>
-        /// Per-project user settings directory. Resolves to `Project/UserSettings/Packages/com.your-package-name`.
-        /// </value>
+        /// <summary>
+        /// Location of where the package settings are saved under the `UserSettings` directory.
+        /// </summary>
+        /// <returns>Per-project user settings directory. </returns>
         protected const string k_UserProjectSettingsDirectory = "UserSettings/Packages";
 
         const bool k_PrettyPrintJson = true;
@@ -30,11 +31,10 @@ namespace UnityEditor.SettingsManagement
         Hash128 m_JsonHash;
 
         /// <summary>
-        /// Constructor sets the serialized data path.
+        /// Initializes and returns an instance of the FileSettingsRepository
+        /// with the serialized data location set to the specified path.
         /// </summary>
-        /// <param name="path">
-        /// The project-relative path to save settings to.
-        /// </param>
+        /// <param name="path">The project-relative path to save settings to.</param>
         public FileSettingsRepository(string path)
         {
             m_Path = path;
@@ -61,27 +61,41 @@ namespace UnityEditor.SettingsManagement
                 m_Dictionary = new SettingsDictionary();
         }
 
+        /// <summary>
+        /// Sets the <see cref="SettingsScope"/> this repository applies to.
+        /// </summary>
+        /// <remarks>
+        /// By default, this repository implementation is relevant to the Project scope, but any implementations
+        /// that override this method can choose to store this serialized data at a user scope instead.
+        /// </remarks>
         /// <value>
-        /// This repository implementation is relevant to the Project scope by default, but overriding implementations
-        /// may store this serialized data at a user scope if desired.
+        /// <see cref="SettingsScope.Project"/>, meaning that this setting applies to project settings (the default);
+        /// or <see cref="SettingsScope.User"/>, meaning that this setting applies to user preferences.
         /// </value>
-        /// <inheritdoc cref="ISettingsRepository.scope"/>
+        /// <seealso cref="ISettingsRepository.scope"/>
         public virtual SettingsScope scope => SettingsScope.Project;
 
-        /// <value>
-        /// The full path to the settings file.
-        /// </value>
-        /// <inheritdoc cref="ISettingsRepository.path"/>
+        /// <summary>
+        /// Gets the full path to the file containing the serialized settings data.
+        /// </summary>
+        /// <value>The location stored for this repository.</value>
+        /// <seealso cref="ISettingsRepository.path"/>
         public string path
         {
             get { return m_Path; }
         }
 
         /// <summary>
-        /// The name of this settings file.
+        /// Sets the name of file containing the serialized settings data.
         /// </summary>
+        /// <value>The bare filename of the settings file.</value>
         public string name => Path.GetFileNameWithoutExtension(path);
 
+        /// <summary>
+        /// Loads the JSON file that stores the values for this settings object.
+        /// </summary>
+        /// <param name="json">The full path to the JSON file to load.</param>
+        /// <returns>True if the file exists; false if it doesn't.</returns>
         public bool TryLoadSavedJson(out string json)
         {
             json = string.Empty;
@@ -92,9 +106,9 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Save all settings to their serialized state.
+        /// Saves all settings to their serialized state.
         /// </summary>
-        /// <inheritdoc cref="ISettingsRepository.Save"/>
+        /// <seealso cref="ISettingsRepository.Save"/>
         public void Save()
         {
             Init();
@@ -121,7 +135,7 @@ namespace UnityEditor.SettingsManagement
                 && existing.Equals(json))
                 return;
 
-#if UNITY_2019_3_OR_NEWER 
+#if UNITY_2019_3_OR_NEWER
             // AssetDatabase.IsOpenForEdit can be a very slow synchronous blocking call when Unity is connected to
             // Perforce Version Control. Especially if it's called repeatedly with every EditorGUI redraw.
             if (File.Exists(path) && !AssetDatabase.IsOpenForEdit(path))
@@ -146,12 +160,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Set a value for key of type T.
+        /// Sets a value for a settings entry with a matching key and type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="value">The value to set. Must be serializable.</param>
-        /// <typeparam name="T">Type of value.</typeparam>
-        /// <inheritdoc cref="ISettingsRepository.Set{T}"/>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="value">The value to set. This value must be serializable.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <seealso cref="ISettingsRepository.Set{T}"/>
         public void Set<T>(string key, T value)
         {
             Init();
@@ -159,12 +173,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Get a value with key of type T, or return the fallback value if no matching key is found.
+        /// Returns a value with key of type `T`, or the fallback value if no matching key is found.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="fallback">If no key with a value of type T is found, this value is returned.</param>
-        /// <typeparam name="T">Type of value to search for.</typeparam>
-        /// <inheritdoc cref="ISettingsRepository.Get{T}"/>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="fallback">Specify the value of type `T` to return if the entry can't be found.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>The settings value if a match is found; otherwise, it returns the default (fallback) value.</returns>
+        /// <seealso cref="ISettingsRepository.Get{T}"/>
         public T Get<T>(string key, T fallback = default(T))
         {
             Init();
@@ -172,12 +187,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Does the repository contain a setting with key and type.
+        /// Determines whether this repository contains a settings entry that matches the specified key and is of type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <typeparam name="T">The type of value to search for.</typeparam>
-        /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
-        /// <inheritdoc cref="ISettingsRepository.ContainsKey{T}"/>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>True if a match is found for both key and type; false if no entry is found.</returns>
+        /// <seealso cref="ISettingsRepository.ContainsKey{T}"/>
         public bool ContainsKey<T>(string key)
         {
             Init();
@@ -185,11 +200,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Remove a key value pair from the settings repository.
+        /// Removes a key-value pair from the settings repository. This method identifies the settings entry to remove
+        /// by matching the specified key for a value of type `T`.
         /// </summary>
-        /// <param name="key"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <inheritdoc cref="ISettingsRepository.Remove{T}"/>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <seealso cref="ISettingsRepository.Remove{T}"/>
         public void Remove<T>(string key)
         {
             Init();

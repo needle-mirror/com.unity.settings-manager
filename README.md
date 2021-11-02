@@ -1,6 +1,6 @@
 # Settings Manager
 
-A framework for making any serializable field a setting, complete with an procedurally popuplated Settings Provider.
+A framework for making any serializable field a setting, complete with an procedurally populated Settings Provider.
 
 ![in action](Documentation~/images/settings.gif)
 

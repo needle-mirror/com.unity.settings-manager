@@ -6,20 +6,20 @@ using UnityEngine;
 namespace UnityEditor.SettingsManagement
 {
     /// <summary>
-    /// Settings manages a collection of <see cref="ISettingsRepository"/>.
+    /// Represents a collection of objects that implement <see cref="ISettingsRepository"/>.
     /// </summary>
     public sealed class Settings
     {
         ISettingsRepository[] m_SettingsRepositories;
 
-        /// <value>
-        /// An event that is raised prior to an `ISettingsRepository` serializing it's current state.
-        /// </value>
+        /// <summary>
+        /// Called prior to when an instance of <see cref="ISettingsRepository"/> serializes its current state.
+        /// </summary>
         public event Action beforeSettingsSaved;
 
-        /// <value>
-        /// An event that is raised after an `ISettingsRepository` has serialized it's current state.
-        /// </value>
+        /// <summary>
+        /// Called immediately after an instance of <see cref="ISettingsRepository"/> serializes its current state.
+        /// </summary>
         public event Action afterSettingsSaved;
 
         Settings()
@@ -27,10 +27,10 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Create a new Settings instance with a <see cref="UserSettingsRepository"/> and <see cref="PackageSettingsRepository"/>.
+        /// Creates a new Settings instance with a <see cref="UserSettingsRepository"/> and <see cref="PackageSettingsRepository"/>.
         /// </summary>
-        /// <param name="package">The package name. Ex, `com.unity.my-package`.</param>
-        /// <param name="settingsFileName">The name of the settings file. Defaults to "Settings."</param>
+        /// <param name="package">The package name, such as `com.example.my-package`.</param>
+        /// <param name="settingsFileName">The name of the settings file. The default value is `Settings`.</param>
         public Settings(string package, string settingsFileName = "Settings")
         {
             m_SettingsRepositories = new ISettingsRepository[]
@@ -41,19 +41,20 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Create a new Settings instance with a collection of <see cref="ISettingsRepository"/>.
+        /// Creates a new Settings instance with a collection of objects that implement <see cref="ISettingsRepository"/>.
         /// </summary>
+        /// <param name="repositories">The repositories to populate the Settings instance with.</param>
         public Settings(IEnumerable<ISettingsRepository> repositories)
         {
             m_SettingsRepositories = repositories.ToArray();
         }
 
         /// <summary>
-        /// Find a settings repository that matches the requested scope.
+        /// Finds and returns a settings repository that matches the specified scope.
         /// </summary>
-        /// <param name="scope">The scope of the settings repository to match.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
         /// <returns>
-        /// An ISettingsRepository instance that is implementing the requested scope. May return null if no
+        /// An <see cref="ISettingsRepository"/> instance that implements the requested scope; or null if no
         /// matching repository is found.
         /// </returns>
         public ISettingsRepository GetRepository(SettingsScope scope)
@@ -65,13 +66,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Find a settings repository that matches the requested scope and name.
+        /// Finds and returns a settings repository that matches the specified scope and name.
         /// </summary>
-        /// <param name="scope">The scope of the settings repository to match.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
         /// <param name="name">The name of the <see cref="ISettingsRepository"/> to match.</param>
         /// <returns>
-        /// An <see cref="ISettingsRepository"/> instance that is implementing the requested scope, and matches name.
-        /// May return null if no matching repository is found.
+        /// An <see cref="ISettingsRepository"/> instance that implements the specified scope and matches the name; or
+        /// null if no matching repository is found.
         /// </returns>
         public ISettingsRepository GetRepository(SettingsScope scope, string name)
         {
@@ -82,7 +83,7 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Serialize the state of all settings repositories.
+        /// Serializes the state of all settings repositories.
         /// </summary>
         public void Save()
         {
@@ -97,12 +98,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Set a value for key of type T.
+        /// Sets a value for a settings entry with a matching key and type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="value">The value to set. Must be serializable.</param>
-        /// <param name="scope">Which scope this settings should be saved in.</param>
-        /// <typeparam name="T">Type of value.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="value">The value to set. This must be serializable.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
         public void Set<T>(string key, T value, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -111,13 +112,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Set a value for key of type T.
+        /// Sets a value for a settings entry with a matching key and type `T` from the specified repository.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="value">The value to set. Must be serializable.</param>
-        /// <param name="repositoryName">If provided, only repositories with a matching name will be considered.</param>
-        /// <param name="scope">Which scope this settings should be saved in.</param>
-        /// <typeparam name="T">Type of value.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="value">The value to set. This must be serializable.</param>
+        /// <param name="repositoryName">Optional. The name of the repository to set this value in.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
         public void Set<T>(string key, T value, string repositoryName, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -126,13 +127,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Set a value for key of type T.
+        /// Sets a value for a settings entry with a matching key and type `T` from the specified repository of type `K`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="value">The value to set. Must be serializable.</param>
-        /// <param name="repositoryName">The name of the repository to set this value in.</param>
-        /// <typeparam name="T">Type of value.</typeparam>
-        /// <typeparam name="K">Type of repository to set this value for.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="value">The value to set. This must be serializable.</param>
+        /// <param name="repositoryName">Optional. The name of the repository to set this value in.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <typeparam name="K">The type of repository to search for matching keys.</typeparam>
         public void Set<T, K>(string key, T value, string repositoryName = null) where K : ISettingsRepository
         {
             bool foundScopeRepository = false;
@@ -151,12 +152,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Get a value with key of type T, or return the fallback value if no matching key is found.
+        /// Returns a value for a settings entry with a matching key and type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="scope">Which scope this settings should be retrieved from.</param>
-        /// <param name="fallback">If no key with a value of type T is found, this value is returned.</param>
-        /// <typeparam name="T">Type of value to search for.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <param name="fallback">Specify the value of type `T` to return if the entry can't be found.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>The value from a matching settings entry; or the default value if not found.</returns>
         public T Get<T>(string key, SettingsScope scope = SettingsScope.Project, T fallback = default(T))
         {
             if (scope == SettingsScope.Project)
@@ -165,13 +167,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Get a value with key of type T, or return the fallback value if no matching key is found.
+        /// Returns a value for a settings entry with a matching key and type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
+        /// <param name="key">The key used to identify the settings entry.</param>
         /// <param name="repositoryName">The repository name to match.</param>
-        /// <param name="scope">Which scope this settings should be retrieved from.</param>
-        /// <param name="fallback">If no key with a value of type T is found, this value is returned.</param>
-        /// <typeparam name="T">Type of value to search for.</typeparam>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <param name="fallback">Specify the value of type `T` to return if the entry can't be found.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>The value from a matching settings entry; or the default value if not found.</returns>
         public T Get<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project, T fallback = default(T))
         {
             if (scope == SettingsScope.Project)
@@ -180,13 +183,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Get a value with key of type T, or return the fallback value if no matching key is found.
+        /// Returns a value for a settings entry with a matching key and type `T` from the specified repository of type `K`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <param name="fallback">If no key with a value of type T is found, this value is returned.</param>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="fallback">Specify the value of type `T` to return if the entry can't be found.</param>
         /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
-        /// <typeparam name="T">Type of value to search for.</typeparam>
-        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <typeparam name="K">The type of repository to search for matching keys.</typeparam>
+        /// <returns>The value from a matching settings entry; or the default value if not found.</returns>
         public T Get<T, K>(string key, T fallback = default(T), string repositoryName = null) where K : ISettingsRepository
         {
             foreach (var repo in m_SettingsRepositories)
@@ -200,12 +204,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Does the repository contain a setting with key and type.
+        /// Determines whether the repository in the specified <see cref="SettingsScope">scope</see> contains a settings entry
+        /// that matches the specified key and is of type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <typeparam name="T">The type of value to search for.</typeparam>
-        /// <param name="scope">Which scope should be searched for matching key.</param>
-        /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>True if a setting matching both key and type is found; false if no entry is found.</returns>
         public bool ContainsKey<T>(string key, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -214,13 +219,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Does the repository contain a setting with key and type.
+        /// Determines whether the specified repository contains a settings entry that matches the specified key and is of type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
+        /// <param name="key">The key used to identify the settings entry.</param>
         /// <param name="repositoryName">The repository name to match.</param>
-        /// <typeparam name="T">The type of value to search for.</typeparam>
-        /// <param name="scope">Which scope should be searched for matching key.</param>
-        /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <returns>True if a setting matching both key and type is found; false if no entry is found.</returns>
         public bool ContainsKey<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -229,13 +234,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Does the repository contain a setting with key and type.
+        /// Determines whether the specified repository of type `K` contains a settings entry that matches the specified key and is of type `T`.
         /// </summary>
-        /// <param name="key">The settings key.</param>
-        /// <typeparam name="T">The type of value to search for.</typeparam>
-        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
-        /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
-        /// <returns>True if a setting matching both key and type is found, false if no entry is found.</returns>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="repositoryName">The repository name to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <typeparam name="K">The type of repository to search for matching keys.</typeparam>
+        /// <returns>True if a setting matching both key and type is found; false if no entry is found.</returns>
         public bool ContainsKey<T, K>(string key, string repositoryName = null) where K : ISettingsRepository
         {
             foreach (var repo in m_SettingsRepositories)
@@ -249,11 +254,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Remove a key value pair from a settings repository.
+        /// Removes a key-value pair from a settings repository. This method identifies the settings entry to remove
+        /// from any repository in the specified <see cref="SettingsScope">scope</see> by matching the specified key
+        /// for a value of type `T`.
         /// </summary>
-        /// <param name="key">The key to remove.</param>
-        /// <param name="scope">Which scope should be searched for matching key.</param>
-        /// <typeparam name="T">The type that this key is pointing to.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
         public void DeleteKey<T>(string key, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -262,12 +269,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Remove a key value pair from a settings repository.
+        /// Removes a key-value pair from a settings repository. This method identifies the settings entry to remove
+        /// from the specified repository by matching the specified key for a value of type `T`.
         /// </summary>
-        /// <param name="key">The key to remove.</param>
+        /// <param name="key">The key used to identify the settings entry.</param>
         /// <param name="repositoryName">The repository name to match.</param>
-        /// <param name="scope">Which scope should be searched for matching key.</param>
-        /// <typeparam name="T">The type that this key is pointing to.</typeparam>
+        /// <param name="scope">The <see cref="SettingsScope">scope</see> of the settings repository to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
         public void DeleteKey<T>(string key, string repositoryName, SettingsScope scope = SettingsScope.Project)
         {
             if (scope == SettingsScope.Project)
@@ -276,12 +284,13 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Remove a key value pair from a settings repository.
+        /// Removes a key-value pair from a settings repository. This method identifies the settings entry to remove
+        /// from the specified repository of type `K` by matching the specified key for a value of type `T`.
         /// </summary>
-        /// <param name="key">The key to remove.</param>
-        /// <param name="repositoryName">If provided, only repositories with a matching name will be searched for the key.</param>
-        /// <typeparam name="T">The type that this key is pointing to.</typeparam>
-        /// <typeparam name="K">Only repositories of type K will be searched for matching keys.</typeparam>
+        /// <param name="key">The key used to identify the settings entry.</param>
+        /// <param name="repositoryName">The repository name to match.</param>
+        /// <typeparam name="T">The type of value that this key points to.</typeparam>
+        /// <typeparam name="K">The type of repository to search for matching keys.</typeparam>
         public void DeleteKey<T, K>(string key, string repositoryName = null) where K : ISettingsRepository
         {
             bool foundScopeRepository = false;
@@ -295,7 +304,7 @@ namespace UnityEditor.SettingsManagement
                 }
             }
 
-            if(!foundScopeRepository)
+            if (!foundScopeRepository)
                 Debug.LogWarning($"No repository with type {typeof(K)} found.");
         }
     }

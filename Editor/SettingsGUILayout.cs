@@ -74,20 +74,19 @@ namespace UnityEditor.SettingsManagement
     }
 
     /// <summary>
-    /// Extension methods for GUILayout that also implement settings-specific functionality.
+    /// Provides extension methods for <see cref="UnityEngine.GUILayout"/> that also implement settings-specific functionality.
     /// </summary>
     public static class SettingsGUILayout
     {
-        /// <inheritdoc />
         /// <summary>
-        /// Create an indented GUI section.
+        /// Provides methods for creating and managing indented GUI sections.
         /// </summary>
         public class IndentedGroup : IDisposable
         {
             bool m_IsDisposed;
 
             /// <summary>
-            /// Create an indented GUI section.
+            /// Creates an indented GUI section.
             /// </summary>
             public IndentedGroup()
             {
@@ -96,8 +95,9 @@ namespace UnityEditor.SettingsManagement
             }
 
             /// <summary>
-            /// Create an indented GUI section with a header.
+            /// Creates an indented GUI section with a label.
             /// </summary>
+            /// <param name="label">The name of the section to display in the UI as a label. </param>
             public IndentedGroup(string label)
             {
                 GUILayout.Label(label);
@@ -105,9 +105,8 @@ namespace UnityEditor.SettingsManagement
                 GUILayout.BeginVertical(SettingsGUIStyles.indentedSettingBlock);
             }
 
-            /// <inheritdoc />
             /// <summary>
-            /// Revert the GUI indent back to it's original value.
+            /// Reverts the GUI indent back to its original value.
             /// </summary>
             public void Dispose()
             {
@@ -157,14 +156,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering.
+        /// Creates a slider that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SearchableSlider(GUIContent label, float value, float min, float max, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -173,14 +172,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering.
+        /// Creates a slider that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SearchableSlider(string label, float value, float min, float max, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -189,12 +188,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A float field that implements search filtering.
+        /// Creates a float field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SearchableFloatField(GUIContent label, float value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -203,12 +202,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A float field that implements search filtering.
+        /// Creates a float field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SearchableFloatField(string label, float value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -217,12 +216,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An int field that implements search filtering.
+        /// Creates an int field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SearchableIntField(GUIContent label, int value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -231,12 +230,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An int field that implements search filtering.
+        /// Creates an int field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SearchableIntField(string label, int value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -245,12 +244,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An toggle field that implements search filtering.
+        /// Creates a toggle field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static bool SearchableToggle(GUIContent label, bool value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -259,12 +258,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An toggle field that implements search filtering.
+        /// Creates a toggle field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static bool SearchableToggle(string label, bool value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -273,12 +272,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An text field that implements search filtering.
+        /// Creates a text field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static string SearchableTextField(GUIContent label, string value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -287,12 +286,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An text field that implements search filtering.
+        /// Creates a text field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static string SearchableTextField(string label, string value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -301,12 +300,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An color field that implements search filtering.
+        /// Creates a color field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static Color SearchableColorField(GUIContent label, Color value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label.text))
@@ -315,12 +314,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An color field that implements search filtering.
+        /// Creates a color field that implements search filtering.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static Color SearchableColorField(string label, Color value, string searchContext)
         {
             if (!MatchSearchGroups(searchContext, label))
@@ -329,14 +328,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering and context menu reset.
+        /// Creates a float slider that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SettingsSlider(GUIContent label, UserSetting<float> value, float min, float max, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -347,14 +346,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering and context menu reset.
+        /// Creates a float slider that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SettingsSlider(string label, UserSetting<float> value, float min, float max, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -365,14 +364,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering and context menu reset.
+        /// Creates an int slider that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SettingsSlider(GUIContent label, UserSetting<int> value, int min, int max, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -383,14 +382,14 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A slider that implements search filtering and context menu reset.
+        /// Creates an int slider that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
         /// <param name="min">The value at the left end of the slider.</param>
         /// <param name="max">The value at the right end of the slider.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SettingsSlider(string label, UserSetting<int> value, int min, int max, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -401,12 +400,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A float field that implements search filtering and context menu reset.
+        /// Creates a float field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SettingsFloatField(GUIContent label, UserSetting<float> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -417,12 +416,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A float field that implements search filtering and context menu reset.
+        /// Creates a float field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static float SettingsFloatField(string label, UserSetting<float> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -433,12 +432,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An integer field that implements search filtering and context menu reset.
+        /// Creates an integer field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SettingsIntField(GUIContent label, UserSetting<int> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -449,12 +448,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// An integer field that implements search filtering and context menu reset.
+        /// Creates an integer field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static int SettingsIntField(string label, UserSetting<int> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -465,12 +464,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A boolean toggle field that implements search filtering and context menu reset.
+        /// Creates a boolean toggle field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static bool SettingsToggle(GUIContent label, UserSetting<bool> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -481,12 +480,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A boolean toggle field that implements search filtering and context menu reset.
+        /// Creates a boolean toggle field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static bool SettingsToggle(string label, UserSetting<bool> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -497,12 +496,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A text field that implements search filtering and context menu reset.
+        /// Creates a text field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static string SettingsTextField(GUIContent label, UserSetting<string> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -513,12 +512,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A text field that implements search filtering and context menu reset.
+        /// Creates a text field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static string SettingsTextField(string label, UserSetting<string> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -529,12 +528,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A color field that implements search filtering and context menu reset.
+        /// Creates a color field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a <see cref="UnityEngine.GUIContent"/> instance to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static Color SettingsColorField(GUIContent label, UserSetting<Color> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label.text))
@@ -545,12 +544,12 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// A color field that implements search filtering and context menu reset.
+        /// Creates a color field that implements search filtering and a <see cref="DoResetContextMenuForLastRect">Reset</see> context menu entry.
         /// </summary>
-        /// <param name="label">Label in front of the value field.</param>
+        /// <param name="label">Specify a string to set the label that appears beside the value field. </param>
         /// <param name="value">The value to edit.</param>
-        /// <param name="searchContext">A string representing the current search query. Empty or null strings are to be treated as matching any value.</param>
-        /// <returns>The value that has been set by the user.</returns>
+        /// <param name="searchContext">A string representing the current search query. Empty or null strings match any value.</param>
+        /// <returns>The value set by the user.</returns>
         public static Color SettingsColorField(string label, UserSetting<Color> value, string searchContext)
         {
             if (!DebugModeFilter(value) || !MatchSearchGroups(searchContext, label))
@@ -561,9 +560,10 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Using the last automatically layoutted rect, implement a context click menu for a user setting.
+        /// Implements a "Reset" context menu entry for the specified user setting.
+        /// using the rect from the last automatic layout.
         /// </summary>
-        /// <param name="setting">The target setting for the reset context menu.</param>
+        /// <param name="setting">The target setting for the "Reset" context menu entry.</param>
         public static void DoResetContextMenuForLastRect(IUserSetting setting)
         {
             DoResetContextMenu(GUILayoutUtility.GetLastRect(), setting);

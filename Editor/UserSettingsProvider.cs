@@ -28,6 +28,9 @@ namespace UnityEditor.SettingsManagement
     public sealed class UserSettingsProvider
 #endif
     {
+        /// <summary>
+        /// Category string constant to check whether Unity is running in developer (internal) mode.
+        /// </summary>
         public const string developerModeCategory = "Developer Mode";
 
         const string k_SettingsName = "UserSettingsProviderSettings";
@@ -92,7 +95,7 @@ namespace UnityEditor.SettingsManagement
             get
             {
                 if (s_Settings == null)
-                    s_Settings = new Settings(new [] { new UserSettingsRepository() });
+                    s_Settings = new Settings(new[] { new UserSettingsRepository() });
 
                 return s_Settings;
             }
@@ -106,7 +109,7 @@ namespace UnityEditor.SettingsManagement
 
 #if SETTINGS_PROVIDER_ENABLED
         /// <summary>
-        /// Create a new UserSettingsProvider.
+        /// Initializes and returns a new `UserSettingsProvider` instance.
         /// </summary>
         /// <param name="path">The settings menu path.</param>
         /// <param name="settings">The Settings instance that this provider is inspecting.</param>
@@ -117,9 +120,9 @@ namespace UnityEditor.SettingsManagement
             : base(path, scopes)
 #else
         /// <summary>
-        /// Create a new UserSettingsProvider.
+        /// Initializes and returns a new `UserSettingsProvider` instance.
         /// </summary>
-        /// <param name="settings">The Settings instance that this provider is inspecting.</param>
+        /// <param name="settings">The <see cref="Settings"/> instance that this provider is inspecting.</param>
         /// <param name="assemblies">A collection of assemblies to scan for <see cref="UserSettingAttribute"/> and <see cref="UserSettingBlockAttribute"/> attributes.</param>
         public UserSettingsProvider(Settings settings, Assembly[] assemblies)
 #endif
@@ -140,10 +143,18 @@ namespace UnityEditor.SettingsManagement
 
 #if SETTINGS_PROVIDER_ENABLED
         /// <summary>
-        /// Invoked by the SettingsProvider when activated in the Editor.
+        /// Invoked by the <see cref="UnityEditor.SettingsProvider"/> when activated in the Editor.
         /// </summary>
-        /// <param name="searchContext"></param>
-        /// <param name="rootElement"></param>
+        /// <param name="searchContext">
+        /// Search context in the search box on the
+        /// [Settings](https://docs.unity3d.com/Manual/comp-ManagerGroup.html) window.
+        /// </param>
+        /// <param name="rootElement">
+        /// Root of the UIElements tree. If you add to this root, the SettingsProvider uses
+        /// [UIElements](https://docs.unity3d.com/ScriptReference/UnityEngine.UIElementsModule.html)
+        /// instead of calling <see cref="OnGUI"/> to build the UI.
+        /// See <see cref="UnityEditor.SettingsProvider.OnActivate"/> for details.
+        /// </param>
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
             base.OnActivate(searchContext, rootElement);
@@ -424,19 +435,23 @@ namespace UnityEditor.SettingsManagement
 
 #if SETTINGS_PROVIDER_ENABLED
         /// <summary>
-        /// Invoked by the Settings editor.
+        /// Called when the Settings window opens in the Editor.
         /// </summary>
         /// <param name="searchContext">
-        /// A string containing the contents of the search bar.
+        /// Search context in the search box on the
+        /// [Settings](https://docs.unity3d.com/Manual/comp-ManagerGroup.html) window.
         /// </param>
+        /// <seealso cref="UnityEditor.SettingsProvider.OnGUI"/>
         public override void OnGUI(string searchContext)
 #else
         /// <summary>
-        /// Invoked by the Settings editor.
+        /// Called when the Settings window opens in the Editor.
         /// </summary>
         /// <param name="searchContext">
-        /// A string containing the contents of the search bar.
+        /// Search context in the search box on the
+        /// [Settings](https://docs.unity3d.com/Manual/comp-ManagerGroup.html) window.
         /// </param>
+        /// <seealso cref="UnityEditor.SettingsProvider.OnGUI"/>
         public void OnGUI(string searchContext)
 #endif
         {

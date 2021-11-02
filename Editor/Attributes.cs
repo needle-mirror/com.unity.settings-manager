@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UnityEditor.SettingsManagement
 {
     /// <summary>
-    /// Register a static field of type IUserSetting with the UserSettingsProvider window.
+    /// A custom attribute for registering a static field of type <see cref="IUserSetting"/> for the <see cref="UserSettingsProvider"/> window.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class UserSettingAttribute : Attribute
@@ -14,34 +14,34 @@ namespace UnityEditor.SettingsManagement
         bool m_VisibleInSettingsProvider;
 
         /// <summary>
-        /// Settings that are automatically scraped from assemblies are displayed in groups, organized by category.
+        /// Gets the name of the group (category) to assign this settings value to.
+        /// When Unity finds settings values in assemblies, it displays them in groups, organized by category.
         /// </summary>
-        /// <value>
-        /// The title of the group of settings that this setting will be shown under.
-        /// </value>
+        /// <value>The group or category where this setting appears in the UI.</value>
         public string category
         {
             get { return m_Category; }
         }
 
-        /// <value>
-        /// The label to show for this setting.
-        /// </value>
+        /// <summary>
+        /// Gets the label to show for this setting.
+        /// </summary>
+        /// <value>The label that appears beside this setting in the UI.</value>
         public GUIContent title
         {
             get { return m_Title; }
         }
 
-        /// <value>
-        /// True if this field should be shown in the UserSettingsProvider interface, false if not.
-        /// </value>
+        /// <summary>
+        /// True to show this field in the <see cref="UserSettingsProvider"/> interface; false if not.
+        /// </summary>
         public bool visibleInSettingsProvider
         {
             get { return m_VisibleInSettingsProvider; }
         }
 
         /// <summary>
-        /// Register a static field as a setting. Field must be of a type implementing IUserSetting.
+        /// Registers a static field as a setting. Fields must be of a type that implements <see cref="IUserSetting"/>.
         /// </summary>
         public UserSettingAttribute()
         {
@@ -49,8 +49,11 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Register a static field as a setting and create an entry in the UI. Field must be of a type implementing IUserSetting.
+        /// Registers a static field as a setting and creates an entry in the UI. The field must be of a type that implements <see cref="IUserSetting"/>.
         /// </summary>
+        /// <param name="category">The category to assign this setting to.</param>
+        /// <param name="title">The display text for this setting in the UI.</param>
+        /// <param name="tooltip">Optional. The tooltip for this setting.</param>
         public UserSettingAttribute(string category, string title, string tooltip = null)
         {
             m_Category = category;
@@ -60,9 +63,10 @@ namespace UnityEditor.SettingsManagement
     }
 
     /// <summary>
-    /// Register a field with Settings, but do not automatically create a property field in the SettingsProvider.
-    /// Unlike UserSettingAttribute, this attribute is valid for instance properties as well as static. These values
-    /// will not be shown in the SettingsProvider, but will have their stored values cleared when "Reset All" is invoked.
+    /// A custom attribute for registering a field with <see cref="Settings"/>, but without automatically creating
+    /// a property field in the <see cref="SettingsProvider"/>.
+    /// Unlike <see cref="UserSettingAttribute"/>, this attribute is valid for instance properties as well as static. These values
+    /// don't appear in the SettingsProvider. Unity clears their stored values when "Reset All" is invoked.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class SettingsKeyAttribute : Attribute
@@ -70,16 +74,21 @@ namespace UnityEditor.SettingsManagement
         string m_Key;
         SettingsScope m_Scope;
 
-        /// <value>
-        /// The key for this value.
-        /// </value>
+        /// <summary>
+        /// Gets the key for this value.
+        /// </summary>
+        /// <value>The key used to identify this settings value from the repository.</value>
         public string key
         {
             get { return m_Key; }
         }
 
+        /// <summary>
+        /// Gets the location where this setting is serialized.
+        /// </summary>
         /// <value>
-        /// Where this setting is serialized.
+        /// Indicates whether this is a <see cref="UnityEditor.SettingsScope.Project"/> setting
+        /// or a <see cref="UnityEditor.SettingsScope.User"/> preference.
         /// </value>
         public SettingsScope scope
         {
@@ -87,10 +96,10 @@ namespace UnityEditor.SettingsManagement
         }
 
         /// <summary>
-        /// Register a field as a setting. This allows the UserSettingsProvider to reset it's value and display it's
-        /// value in debugging modes.
+        /// Registers a field as a setting. This allows the <see cref="UserSettingsProvider"/> to reset its value and display it
+        /// in debugging modes.
         /// </summary>
-        /// <param name="key">The setting key.</param>
+        /// <param name="key">The key for this setting.</param>
         /// <param name="scope">The scope in which this setting is serialized.</param>
         public SettingsKeyAttribute(string key, SettingsScope scope = SettingsScope.Project)
         {
@@ -100,7 +109,7 @@ namespace UnityEditor.SettingsManagement
     }
 
     /// <summary>
-    /// UserSettingBlock allows you add a section of settings to a category.
+    /// A custom attribute for adding a section of settings to a category.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class UserSettingBlockAttribute : Attribute
@@ -108,24 +117,23 @@ namespace UnityEditor.SettingsManagement
         string m_Category;
 
         /// <summary>
-        /// Settings that are automatically scraped from assemblies are displayed in groups, organized by category.
+        /// Returns the title for the settings group.
+        /// When Unity finds settings values in assemblies, it displays them in groups, organized by category.
         /// </summary>
-        /// <value>
-        /// The title of the group of settings that this setting will be shown under.
-        /// </value>
+        /// <value>The group or category where this setting appears in the UI.</value>
         public string category
         {
             get { return m_Category; }
         }
 
         /// <summary>
-        /// Register a static method for a callback in the UserSettingsProvider editor under a category.
-        /// <code>
+        /// Registers a static method for a callback in the <see cref="UserSettingsProvider"/> Editor window under a category.
+        /// <code><![CDATA[
         /// [UserSettingBlock("General")]
         /// static void GeneralSettings(string[] searchContext) {}
-        /// </code>
+        /// ]]></code>
         /// </summary>
-        /// <param name="category">The title of the group of settings that this setting will be shown under.</param>
+        /// <param name="category">Specify the title of the group of settings under which this setting appears in the UI.</param>
         public UserSettingBlockAttribute(string category)
         {
             m_Category = category;

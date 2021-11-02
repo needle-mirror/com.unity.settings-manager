@@ -1,4 +1,4 @@
-Settings-Manager copyright © 2021 Unity Technologies ApS
+com.unity.settings-manager copyright © 2021 Unity Technologies ApS
 
 Licensed under the Unity Companion License for Unity-dependent projects--see [Unity Companion License](http://www.unity3d.com/legal/licenses/Unity_Companion_License).
 
