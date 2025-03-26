@@ -13,13 +13,11 @@ namespace UnityEditor.SettingsManagement
         /// <summary>
         /// Location of where the package settings are saved under the `ProjectSettings` directory.
         /// </summary>
-        /// <returns>The folder where package settings are saved under the `ProjectSettings` directory.</returns>
         protected const string k_PackageSettingsDirectory = "ProjectSettings/Packages";
 
         /// <summary>
         /// Location of where the package settings are saved under the `UserSettings` directory.
         /// </summary>
-        /// <returns>Per-project user settings directory. </returns>
         protected const string k_UserProjectSettingsDirectory = "UserSettings/Packages";
 
         const bool k_PrettyPrintJson = true;

@@ -313,12 +313,15 @@ namespace UnityEditor.SettingsManagement
         }
 
 #if SETTINGS_PROVIDER_ENABLED
+        static readonly GUIContent k_OptionsMenu =
+            new GUIContent(null, null, "Options specific to this category of settings.");
+        
         /// <summary>
         /// Invoked by the SettingsProvider container when drawing the UI header.
         /// </summary>
         public override void OnTitleBarGUI()
         {
-            if (GUILayout.Button(GUIContent.none, SettingsGUIStyles.settingsGizmo))
+            if (GUILayout.Button(k_OptionsMenu, SettingsGUIStyles.settingsGizmo))
                 DoContextMenu();
         }
 #endif
@@ -352,7 +355,7 @@ namespace UnityEditor.SettingsManagement
         {
             var menu = new GenericMenu();
 
-            menu.AddItem(new GUIContent("Reset All"), false, () =>
+            menu.AddItem(new GUIContent("Reset All", "Reset all settings in this category."), false, () =>
                 {
                     if (!UnityEditor.EditorUtility.DisplayDialog("Reset All Settings", "Reset all settings? This is not undo-able.", "Reset", "Cancel"))
                         return;

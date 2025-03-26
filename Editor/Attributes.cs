@@ -128,10 +128,6 @@ namespace UnityEditor.SettingsManagement
 
         /// <summary>
         /// Registers a static method for a callback in the <see cref="UserSettingsProvider"/> Editor window under a category.
-        /// <code><![CDATA[
-        /// [UserSettingBlock("General")]
-        /// static void GeneralSettings(string[] searchContext) {}
-        /// ]]></code>
         /// </summary>
         /// <param name="category">Specify the title of the group of settings under which this setting appears in the UI.</param>
         public UserSettingBlockAttribute(string category)
