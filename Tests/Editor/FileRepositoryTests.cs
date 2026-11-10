@@ -5,7 +5,7 @@ using UnityEditor.SettingsManagement;
 
 namespace UnityEngine.SettingsManagement.EditorTests
 {
-	public class FileRepositoryTests : SettingsTestBase
+	internal class FileRepositoryTests : SettingsTestBase
 	{
 		Settings m_Settings;
 		FileSettingsRepository m_Repository;

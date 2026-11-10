@@ -5,7 +5,7 @@ using Directory = UnityEngine.Windows.Directory;
 
 namespace UnityEngine.SettingsManagement.EditorTests
 {
-	public class TestProjectUserSettings : SettingsTestBase
+	internal class TestProjectUserSettings : SettingsTestBase
 	{
 		Settings m_Settings;
 		ISettingsRepository m_UserSettingsRepo;

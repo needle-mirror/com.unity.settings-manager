@@ -1,1 +1,27 @@
-{"name":"com.unity.settings-manager","displayName":"Settings Manager","version":"2.1.1","unity":"2022.3","description":"A framework for making any serializable field a setting, complete with a pre-built settings interface.","samples":[{"displayName":"User Settings Example","description":"Example code showing use of the Settings Manager attributes.","path":"Samples~"}],"hideInEditor":true,"_upm":{"changelog":"### Changes\n\n- Enable Auto Reference on main assembly.\n\n### Bug Fixes\n\n- [case: PBLD-56] Added tooltip to \"Options\" gear icon to specify that context menu items are relevant only to the selected category."},"upmCi":{"footprint":"ce1b795144f0590981795c9a1a8394ed4e206a94"},"documentationUrl":"https://docs.unity3d.com/Packages/com.unity.settings-manager@2.1/manual/index.html","repository":{"url":"https://github.com/Unity-Technologies/com.unity.settings-manager.git","type":"git","revision":"6eb5ed85eaf3276cc09f0cc4fc3311c72f0fc196"}}
+{
+  "name": "com.unity.settings-manager",
+  "displayName": "Settings Manager",
+  "version": "2.1.2",
+  "unity": "2022.3",
+  "description": "A framework for making any serializable field a setting, complete with a pre-built settings interface.",
+  "samples": [
+    {
+      "displayName": "User Settings Example",
+      "description": "Example code showing use of the Settings Manager attributes.",
+      "path": "Samples~"
+    }
+  ],
+  "hideInEditor": true,
+  "_upm": {
+    "changelog": "### Changes\n- Updated `.buginfo` to route bugs to the UUM Jira project.\n- Upgraded the `Options.png` TextureImporter meta to serialized version 10.\n- Made test classes internal so they are no longer part of the public API."
+  },
+  "upmCi": {
+    "footprint": "a7a390a279546f3ad0a51c9129e86a9d9cfde315"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.settings-manager@2.1/manual/index.html",
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/com.unity.settings-manager.git",
+    "type": "git",
+    "revision": "d1783aca32283606d36127bb67f0a492a492d528"
+  }
+}

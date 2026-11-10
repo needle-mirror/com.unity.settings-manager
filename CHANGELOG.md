@@ -5,6 +5,18 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.2] - 2026-11-10
+
+### Changes
+- Updated `.buginfo` to route bugs to the UUM Jira project.
+- Upgraded the `Options.png` TextureImporter meta to serialized version 10.
+- Made test classes internal so they are no longer part of the public API.
+
+## [2.1.1] - 2025-06-26
+
+### Changes
+- Fixed API visibility caused by outdated tooling.
+
 ## [2.1.0] - 2025-03-26
 
 ### Changes
